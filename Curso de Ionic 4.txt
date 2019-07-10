@@ -1,0 +1,14 @@
+Curso de Ionic 4
+
+Pasos:
+1.- npm install -g ionic
+2.- ionic start
+3.- nombre
+4.- blank
+5.- Gradle instalar
+	Con Chocolatey instrucciones en youtube.
+6.- Java SDK
+7.- Android Studio
+
+
+Inicio del Proyecto - Componentes
