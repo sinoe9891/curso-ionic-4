@@ -10,5 +10,179 @@ Pasos:
 6.- Java SDK
 7.- Android Studio
 
+Extensiones de Visual Studio Code:
 
-Inicio del Proyecto - Componentes
+Visual Studio Code - Extensions.pdf
+1. .jshintrc Generator
+2. AB HTML Formatter
+3. Angular 7 Snippets
+4. Angular Language Service
+5. Angular2-inline
+6. Auto Close Tag
+7. Bootstrap 4, Font Awesome 4
+8. Gist Extension
+9. HTML CSS Support
+10. Ionic 4 snippets
+11. JavaScript ( ES6 ) code snippets
+12. jshint
+13. JSON to TS
+14. Material Icon Theme
+15. MySQL-inline-decorator
+16. Prettier - Code formatter
+17. PWA Tools
+18. Terminal
+19. TSLint
+20. TypeScript Importer
+
+
+
+
+1.- Inicio del Proyecto - Componentes
+	1.- ionic start nombre [aplicacion] blank
+
+1.2 Cambiado la pantalla Principal
+	Eliminaremos Home
+	Crearemos un componente
+	Creamos una pagina 
+		ionic g [nombre] pages/inicio --dry-run
+		*nota:
+		--dry-run solo muestra lo que el comando usado va realizar solo es un postvisualización.
+		
+		Al crear una pagina se agreaga un PATH automaticamente en app-routing.modules.ts
+
+1.3 Navegar entre pantallas
+	Crearemos un pagina nueva llama "alert":
+	ionic g page pages/alert --spec=false
+	*nota
+		se unsa --spec=false para que no salga el archivo de prueba
+	También se creara una página llamada "action-sheet":
+	ionic g page pages/action-sheet --spec=false
+
+	Iniciamos en la pagina de Inicio
+		Creamos un Botón
+			<ion-button>Alert</ion-button>
+			<ion-button>Action Sheet</ion-button>
+		
+		Y agregamos la directiva o componente routerLink="/alert" de esta manera:
+		<ion-button routerLink="/alert">Alert</ion-button>
+    	<ion-button routerLink="/action-sheet">Action Sheet</ion-button>
+
+1.4 Back Button - Botón para regresar a la página anterior
+	Vamos a crear el botón backbutton
+	<ion-header>
+		<ion-toolbar>
+			<ion-buttons>
+				<ion-back-button>
+					
+				</ion-back-button>
+			</ion-buttons>
+			<ion-title>Alert</ion-title>
+		</ion-toolbar>
+	</ion-header>	
+
+	Para alinear los botones con el titulo de la página debemos de usar slot="start"
+
+	<ion-header>
+		<ion-toolbar>
+			<ion-buttons slot="start">
+				<ion-back-button >
+				</ion-back-button>
+			</ion-buttons>
+			<ion-title>alert</ion-title>
+		</ion-toolbar>
+	</ion-header>
+
+	Vamos a utilizar la directiva o componente defaultHref="/" para que siempre se ve el boton sin necesidad de llegar a la página desde el Inicio o de otro lugar sin generar una historia de "back"
+
+	<ion-header>
+		<ion-toolbar>
+			<ion-buttons slot="start">
+				<ion-back-button defaultHref="/">
+
+				</ion-back-button>
+			</ion-buttons>
+			<ion-title>alert</ion-title>
+		</ion-toolbar>
+	</ion-header>
+
+	Podemos agregar texto que deseemos:
+
+	La documentación esta en este enlace:
+	https://ionicframework.com/docs/api/back-button
+
+1.5 Modulos de Componentes - Header Todo esto es para agrupar todos los componentes de la aplicación
+	vamos a generar el modulo componentes
+		ionic g module components
+	Ahora vamos a crear un componente dentro de la carpeta principal del modulo components
+		ionic g c components/header --spec=false
+		o
+		ionic g components components/header --spec=false
+
+		esto automaticamente debería de agreagarlo en components.module.ts si no lo hace debemos de agregar el "HeaderComponent" en este caso así:
+
+		@NgModule({
+			declarations: [HeaderComponent],
+			imports: [
+				CommonModule
+			]
+		})
+	Ahora exportaremos para que se pueda usar fuera de este modulo;
+		exports:[
+			HeaderComponent
+		],
+
+	Quedaría así:
+		import { NgModule } from '@angular/core';
+		import { CommonModule } from '@angular/common';
+		import { HeaderComponent } from './header/header.component';
+
+		@NgModule({
+		declarations: [
+			HeaderComponent
+		],
+		exports:[
+			HeaderComponent
+		],
+		imports: [
+			CommonModule
+		]
+		})
+		export class ComponentsModule { }
+
+	Ahora declaramos en app.module.ts y también en la page.module.ts de la página
+		@NgModule({
+		declarations: [AppComponent],
+		entryComponents: [],
+		imports: [
+			BrowserModule, 
+			IonicModule.forRoot(), 
+			AppRoutingModule,
+			ComponentsModule
+		],
+		providers: [
+			StatusBar,
+			SplashScreen,
+			{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+		],
+		bootstrap: [AppComponent]
+		})
+	Nos aseguramos que lo importe arriba:
+	import { ComponentsModule } from './components/components.module';
+
+
+	Ahora vamos a modificar el header.components.html para que se vea en todas las paginas pero para que este archivo pueda utilizar elementos, etiquetas etc... de IONIC necesitamos importar IonicModule dentro del archivo: components.module.ts
+
+	@NgModule({
+		declarations: [
+			HeaderComponent
+		],
+		exports:[
+			HeaderComponent
+		],
+		imports: [
+			CommonModule,
+			IonicModule
+		]
+		})
+		export class ComponentsModule { }
+	
