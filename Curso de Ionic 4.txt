@@ -157,7 +157,7 @@ Visual Studio Code - Extensions.pdf
 			BrowserModule, 
 			IonicModule.forRoot(), 
 			AppRoutingModule,
-			ComponentsModule
+			ComponentsModule //Este es el que se agrego y debe agregarse en las paginas que lo necesiten
 		],
 		providers: [
 			StatusBar,
@@ -185,4 +185,44 @@ Visual Studio Code - Extensions.pdf
 		]
 		})
 		export class ComponentsModule { }
+	
+	Para poder recibir el titulo dinamico por página en el header vamos a ralizar lo siguiente:
+
+	@Input titulo:string;
+
+
+	Quedaría:
+	import { Component, OnInit, Input } from '@angular/core';
+
+	@Component({
+	selector: 'app-header',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.scss'],
+	})
+	export class HeaderComponent implements OnInit {
+
+	@Input() titulo: string;
+	
+	constructor() { }
+
+	ngOnInit() {}
+
+	}
+
+1.6 ION List listas en Ionic
+	Formato de una lista
+	<ion-list>
+        <ion-item>
+            <ion-label>Alert</ion-label>
+        </ion-item>
+    </ion-list>
+
+	Vamos agregar detail para que se vea una flecha de referencia y ek routerlink
+	<ion-list>
+        <ion-item routerLink="/alert" detail>
+            <ion-label >Alert</ion-label>
+        </ion-item>
+    </ion-list>
+
+	Ahora haremos un arreglo de componentes:
 	
