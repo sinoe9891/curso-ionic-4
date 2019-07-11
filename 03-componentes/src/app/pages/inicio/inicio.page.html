@@ -6,12 +6,17 @@
 
 <ion-content>
     <ion-list>
-        <ion-item routerLink="/alert" detail>
+        <!-- <ion-item *ngFor="let cualquiertexto of nombredelcomponentes" [routerLink]="cualquiertexto.componentedelarray" detail> -->
+        <ion-item *ngFor="let items of ItemsArray" [routerLink]="items.redirectTo" detail>
+            <ion-icon [name]="items.icon"></ion-icon>
+            <ion-label>{{items.name}}</ion-label>
+        </ion-item>
+        <!-- <ion-item routerLink="/alert" detail>
             <ion-label>Alert</ion-label>
         </ion-item>
         <ion-item routerLink="/action-sheet" detail>
             <ion-label>Action Sheet</ion-label>
-        </ion-item>
+        </ion-item> -->
     </ion-list>
     <ion-button routerLink="/alert">Alert</ion-button>
     <ion-button routerLink="/action-sheet">Action Sheet</ion-button>
