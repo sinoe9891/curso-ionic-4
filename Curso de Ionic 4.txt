@@ -217,12 +217,262 @@ Visual Studio Code - Extensions.pdf
         </ion-item>
     </ion-list>
 
-	Vamos agregar detail para que se vea una flecha de referencia y ek routerlink
+	iconos (https://ionicons.com/)
+
+	Vamos agregar "detail" para que se vea una flecha de referencia y ek routerlink
 	<ion-list>
         <ion-item routerLink="/alert" detail>
             <ion-label >Alert</ion-label>
         </ion-item>
     </ion-list>
 
-	Ahora haremos un arreglo de componentes:
+	Ahora haremos un arreglo de componentes :
+
+	Interface (https://desarrolloweb.com/articulos/definicion-interfaces-typescript.html)
+	Técnicamente, las interfaces son un mecanismo de la programación orientada a objetos que trata de suplir la carencia de herencia múltiple. La mayoría de los lenguajes que implementan la orientación a objetos no ofrecen la posibilidad de definir una clase que extienda varias clases a la vez y sin embargo a veces es deseable. Ahí es donde entran las interfaces. 
 	
+	Por este motivo, se dice que las interfaces son como un contrato, en el que se especifica las cosas que debe contener una clase para que pueda implementar una interfaz o cumplir el contrato declarado por esa interfaz. 
+
+	Primero creamos una interface llamada Componente en inicio.page.ts y agregamos lo siguiente:
+
+		interface Componente{
+			icon: string;
+			name: string;
+			redirectTo: string; 
+
+		}
+
+	Luego agregamos los componentes:
+		componentes: Componente[] = [
+		{
+		icon: 'american-football',
+		name: 'action-sheet',
+		redirectTo: '/action-sheet'    
+		},
+		{
+		icon: 'appstore',
+		name: 'Alert',
+		redirectTo: '/alert'    
+		}
+		];
+	Quedaría de esta manera:
+		export class InicioPage implements OnInit {
+
+		ItemsArray: ItemIsudos[] = [
+			{
+			icon: 'beer',
+			name: 'action-sheet',
+			redirectTo: '/action-sheet'    
+			},
+			{
+			icon: 'alert',
+			name: 'Alert',
+			redirectTo: '/alert'    
+			}
+		];
+		constructor() { }
+
+		ngOnInit() {
+		}
+
+		}
+
+		interface ItemIsudos{
+		icon: string;
+		name: string;
+		redirectTo: string; 
+
+		}
+
+	Directiva ngFor (https://desarrolloweb.com/articulos/directiva-ngfor-angular2.html)
+	Que es la directiva ngFor, es capaz de hacer una repetición de elementos dentro de la página. Esta repetición nos permite recorrer una estructura de array y para cada uno de sus elementos replicar una cantidad de elementos en el DOM. 
+
+	Estamos obligados a crear de antemano un array con datos, que deben ser enviados a la vista, para que ya en el HTML se pueda realizar esa repetición
+
+	Ahora que estamos listos para agregar un *ngFor
+	Ejemplo
+	*ngFor="let cualquiertexto of nombredelcomponentes" [routerLink]="cualquiertexto.componentedelarray"
+
+	Quedaría:
+	<ion-item *ngFor="let items of ItemsArray" [routerLink]="items.redirectTo" detail>
+            <ion-icon [name]="items.icon"></ion-icon>
+            <ion-label>{{items.name}}</ion-label>
+        </ion-item>
+
+
+-------------------------------------------------
+02- ion-action sheet
+	Crearemos un boton con color Primary y ancho completo
+
+	<ion-button expand="full" color="primary">
+        Mostrar Action Sheet
+    </ion-button>
+
+	Ahora importaremos el servicio ActionSheetController en el constructor de action-sheet.page.ts 
+	
+	import { ActionSheetController } from '@ionic/angular'; o se importa automaticamente..
+
+	Ahora lo agregaremos al constructor con el nombre "actionSheetCtrl" pero puede llamarse como se desee tomando en cuenta que sera el mismo nombre del componente con el nombre completo de la clase "ActionSheetController"
+
+	constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+	quedaría así 
+
+	import { Component, OnInit } from '@angular/core';
+	import { ActionSheetController } from '@ionic/angular';
+
+	@Component({
+	selector: 'app-action-sheet',
+	templateUrl: './action-sheet.page.html',
+	styleUrls: ['./action-sheet.page.scss'],
+	})
+	export class ActionSheetPage implements OnInit {
+
+	constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+	ngOnInit() {
+	}
+	}
+
+	Ahora copiamos el ejemplo de ActionSheetController:
+
+	async presentActionSheet() {
+	const actionSheet = await this.actionSheetCtrl.create({
+	header: 'Albums',
+	backdropDismiss: false,
+	buttons: [{
+		text: 'Delete',
+		role: 'destructive',
+		icon: 'trash',
+		cssClass: 'rojo',
+		handler: () => {
+		console.log('Delete clicked');
+		}
+	}, {
+		text: 'Share',
+		icon: 'share',
+		handler: () => {
+		console.log('Share clicked');
+		}
+	}, {
+		text: 'Play (open modal)',
+		icon: 'arrow-dropright-circle',
+		handler: () => {
+		console.log('Play clicked');
+		}
+	}, {
+		text: 'Favorite',
+		icon: 'heart',
+		handler: () => {
+		console.log('Favorite clicked');
+		}
+	}, {
+		text: 'Cancel',
+		icon: 'close',
+		role: 'cancel',
+		handler: () => {
+		console.log('Cancel clicked');
+		}
+	}]
+	});
+	await actionSheet.present();
+	}
+
+	y  Usaremos backdropDismiss: false, para que obligue al usuario a usar una opción del ActionSheet
+	header: 'Albums',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Delete',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          console.log('Delete clicked');
+        }
+      }
+
+	Cambiar color de los botones del ActionSheet y usaremos "cssClass"
+	header: 'Albums',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Delete',
+        role: 'destructive',
+        icon: 'trash',
+        cssClass: 'rojo',
+        handler: () => {
+          console.log('Delete clicked');
+        }
+      }
+
+	quedaría de esta forma:
+		import { Component, OnInit } from '@angular/core';
+		import { ActionSheetController } from '@ionic/angular';
+
+		@Component({
+		selector: 'app-action-sheet',
+		templateUrl: './action-sheet.page.html',
+		styleUrls: ['./action-sheet.page.scss'],
+		})
+		export class ActionSheetPage implements OnInit {
+
+		constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+		ngOnInit() {
+		}
+		async presentActionSheet() {
+			const actionSheet = await this.actionSheetCtrl.create({
+			header: 'Albums',
+			backdropDismiss: false,
+			buttons: [{
+				text: 'Delete',
+				role: 'destructive',
+				icon: 'trash',
+				cssClass: 'rojo',
+				handler: () => {
+				console.log('Delete clicked');
+				}
+			}, {
+				text: 'Share',
+				icon: 'share',
+				handler: () => {
+				console.log('Share clicked');
+				}
+			}, {
+				text: 'Play (open modal)',
+				icon: 'arrow-dropright-circle',
+				handler: () => {
+				console.log('Play clicked');
+				}
+			}, {
+				text: 'Favorite',
+				icon: 'heart',
+				handler: () => {
+				console.log('Favorite clicked');
+				}
+			}, {
+				text: 'Cancel',
+				icon: 'close',
+				role: 'cancel',
+				handler: () => {
+				console.log('Cancel clicked');
+				}
+			}]
+			});
+			await actionSheet.present();
+			}
+		}
+
+	y agregaremos la clase a global.scss para que puedan verse los cambios reflejados:
+
+	.rojo span,
+	.rojo .sc-ion-action-sheet-md {
+		color: red !important;
+	}
+
+	handler sirve para disparar lo que necesitamos hacer al ejecutar la acción.
+ 	
+	 async lo que dice que este metodo regresa una promesa que ejecuta el código de fomar asincrona.
+
+	 backdropDismiss: false : para que obligue al usuario a usar una opción del ActionSheet
+
+-------------------------------------------------
+03- ion-alert

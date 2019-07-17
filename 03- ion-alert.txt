@@ -1,0 +1,113 @@
+-------------------------------------------------
+03- ion-alert
+
+Realizaremos el mismo proceso con el action sheet
+
+Crearemos un boton con color Primary y ancho completo
+
+    <ion-button expand="full" color="primary" (click)="presentAlert()">
+        Mostrar Alert
+    </ion-button>
+
+	Ahora importaremos el servicio AlertController en el constructor de action-sheet.page.ts 
+	
+	import { AlertController } from '@ionic/angular'; o se importa automaticamente..
+
+	Ahora lo agregaremos al constructor con el nombre "alertCtrl" pero puede llamarse como se desee tomando en cuenta que sera el mismo nombre del componente con el nombre completo de la clase "AlertController"
+
+	constructor(private alertCtrl:AlertController ) { }
+
+	quedaría así:
+
+    import { Component, OnInit } from '@angular/core';
+    import { AlertController } from '@ionic/angular';
+
+    @Component({
+    selector: 'app-alert',
+    templateUrl: './alert.page.html',
+    styleUrls: ['./alert.page.scss'],
+    })
+    export class AlertPage implements OnInit {
+
+    constructor(public alertCtrl: AlertController) { }
+
+    ngOnInit() {
+    }
+
+    async presentAlert() {
+        const alert = await this.alertCtrl.create({
+        header: 'Alert',
+        subHeader: 'Subtitle',
+        message: 'This is an alert message.',
+        buttons: ['OK']
+        });
+
+        await alert.present();
+    }
+
+    }
+
+Ahora crearemos un alert con dos botones con un "handler" console.log
+
+async presentAlertMultipleButtons() {
+    const alert = await this.alertCtrl.create({
+      header: 'Alert',
+      subHeader: 'Subtitle',
+      message: 'This is an alert message.',
+      buttons: [{
+        text: 'Cancel',
+        role: 'cancel',
+        cssClass: 'secondary',
+        handler: (blah) => {
+          console.log('Botón cancelar');
+        }
+      }, {
+        text: 'Ok',
+        handler: () => {
+          console.log('Botón Ok');
+        }
+      }]
+    });
+    
+    await alert.present();
+  }
+
+
+  Ahora crearemos un boton con Input
+
+  async presentAlertPrompt() {
+    const alert = await this.alertCtrl.create({
+      header: 'Prompt!',
+      inputs: [
+        {
+          name: 'name1',
+          type: 'text',
+          placeholder: 'Placeholder 1'
+        },
+        {
+          name: 'name2',
+          type: 'text',
+          id: 'name2-id',
+          value: 'hello',
+          placeholder: 'Placeholder 2'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Confirmar',
+          handler: () => {
+            console.log('Confirm Ok');
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }

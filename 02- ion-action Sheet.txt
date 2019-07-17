@@ -1,0 +1,174 @@
+-------------------------------------------------
+02- ion-action sheet
+	Crearemos un boton con color Primary y ancho completo
+
+	<ion-button expand="full" color="primary">
+        Mostrar Action Sheet
+    </ion-button>
+
+	Ahora importaremos el servicio ActionSheetController en el constructor de action-sheet.page.ts 
+	
+	import { ActionSheetController } from '@ionic/angular'; o se importa automaticamente..
+
+	Ahora lo agregaremos al constructor con el nombre "actionSheetCtrl" pero puede llamarse como se desee tomando en cuenta que sera el mismo nombre del componente con el nombre completo de la clase "ActionSheetController"
+
+	constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+	quedaría así 
+
+	import { Component, OnInit } from '@angular/core';
+	import { ActionSheetController } from '@ionic/angular';
+
+	@Component({
+	selector: 'app-action-sheet',
+	templateUrl: './action-sheet.page.html',
+	styleUrls: ['./action-sheet.page.scss'],
+	})
+	export class ActionSheetPage implements OnInit {
+
+	constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+	ngOnInit() {
+	}
+	}
+
+	Ahora copiamos el ejemplo de ActionSheetController:
+
+	async presentActionSheet() {
+	const actionSheet = await this.actionSheetCtrl.create({
+	header: 'Albums',
+	backdropDismiss: false,
+	buttons: [{
+		text: 'Delete',
+		role: 'destructive',
+		icon: 'trash',
+		cssClass: 'rojo',
+		handler: () => {
+		console.log('Delete clicked');
+		}
+	}, {
+		text: 'Share',
+		icon: 'share',
+		handler: () => {
+		console.log('Share clicked');
+		}
+	}, {
+		text: 'Play (open modal)',
+		icon: 'arrow-dropright-circle',
+		handler: () => {
+		console.log('Play clicked');
+		}
+	}, {
+		text: 'Favorite',
+		icon: 'heart',
+		handler: () => {
+		console.log('Favorite clicked');
+		}
+	}, {
+		text: 'Cancel',
+		icon: 'close',
+		role: 'cancel',
+		handler: () => {
+		console.log('Cancel clicked');
+		}
+	}]
+	});
+	await actionSheet.present();
+	}
+
+	y  Usaremos backdropDismiss: false, para que obligue al usuario a usar una opción del ActionSheet
+	header: 'Albums',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Delete',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          console.log('Delete clicked');
+        }
+      }
+
+	Cambiar color de los botones del ActionSheet y usaremos "cssClass"
+	header: 'Albums',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Delete',
+        role: 'destructive',
+        icon: 'trash',
+        cssClass: 'rojo',
+        handler: () => {
+          console.log('Delete clicked');
+        }
+      }
+
+	quedaría de esta forma:
+		import { Component, OnInit } from '@angular/core';
+		import { ActionSheetController } from '@ionic/angular';
+
+		@Component({
+		selector: 'app-action-sheet',
+		templateUrl: './action-sheet.page.html',
+		styleUrls: ['./action-sheet.page.scss'],
+		})
+		export class ActionSheetPage implements OnInit {
+
+		constructor(private actionSheetCtrl:ActionSheetController ) { }
+
+		ngOnInit() {
+		}
+		async presentActionSheet() {
+			const actionSheet = await this.actionSheetCtrl.create({
+			header: 'Albums',
+			backdropDismiss: false,
+			buttons: [{
+				text: 'Delete',
+				role: 'destructive',
+				icon: 'trash',
+				cssClass: 'rojo',
+				handler: () => {
+				console.log('Delete clicked');
+				}
+			}, {
+				text: 'Share',
+				icon: 'share',
+				handler: () => {
+				console.log('Share clicked');
+				}
+			}, {
+				text: 'Play (open modal)',
+				icon: 'arrow-dropright-circle',
+				handler: () => {
+				console.log('Play clicked');
+				}
+			}, {
+				text: 'Favorite',
+				icon: 'heart',
+				handler: () => {
+				console.log('Favorite clicked');
+				}
+			}, {
+				text: 'Cancel',
+				icon: 'close',
+				role: 'cancel',
+				handler: () => {
+				console.log('Cancel clicked');
+				}
+			}]
+			});
+			await actionSheet.present();
+			}
+		}
+
+	y agregaremos la clase a global.scss para que puedan verse los cambios reflejados:
+
+	.rojo span,
+	.rojo .sc-ion-action-sheet-md {
+		color: red !important;
+	}
+
+	handler sirve para disparar lo que necesitamos hacer al ejecutar la acción.
+ 	
+	 async lo que dice que este metodo regresa una promesa que ejecuta el código de fomar asincrona.
+
+	 backdropDismiss: false : para que obligue al usuario a usar una opción del ActionSheet
+
