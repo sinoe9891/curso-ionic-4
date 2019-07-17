@@ -19,13 +19,14 @@ export class InicioPage implements OnInit {
       redirectTo: '/alert'    
     }
   ];
+  
   constructor() { }
 
   ngOnInit() {
   }
 
 }
-
+// Interfaz
 interface ItemIsudos{
   icon: string;
   name: string;
