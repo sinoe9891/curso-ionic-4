@@ -1,5 +1,19 @@
 <app-header titulo="Alert Page"></app-header>
 
 <ion-content>
-    <h1>Este es Alert Page</h1>
+    <button (click)="presentAlert()">
+Mostrat Alert
+    </button>
+    <ion-button expand="full" color="primary" (click)="presentAlert()">
+        Mostrar Alert
+    </ion-button>
+    <ion-button expand="full" color="secondary" (click)="presentAlertMultipleButtons()">
+        Mostrar Alert Multi Botones
+    </ion-button>
+    <ion-button expand="full" color="primary" (click)="presentAlertConfirm()">
+        Mostrar Alert Confirmar
+    </ion-button>
+    <ion-button expand="full" color="primary" (click)="presentAlertPrompt()">
+        Mostrar Alert Con Input
+    </ion-button>
 </ion-content>

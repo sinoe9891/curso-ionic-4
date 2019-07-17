@@ -217,42 +217,67 @@ Visual Studio Code - Extensions.pdf
         </ion-item>
     </ion-list>
 
-	Vamos agregar "detail" para que se vea una flecha de referencia en android como iOS y el routerlink
+	iconos (https://ionicons.com/)
+
+	Vamos agregar "detail" para que se vea una flecha de referencia y ek routerlink
 	<ion-list>
         <ion-item routerLink="/alert" detail>
             <ion-label >Alert</ion-label>
         </ion-item>
     </ion-list>
 
-		Y Crearemos una Interfaz:
+	Ahora haremos un arreglo de componentes :
 
-	Una interfaz es un tipo abstracto que sirve como contrato para la estructura de un objeto y al igual que las clases puede ser utilizada como un tipo de dato. Para declarar una interfaz en TypeScript utilizamos la palabra clave interface.
+	Interface (https://desarrolloweb.com/articulos/definicion-interfaces-typescript.html)
+	Técnicamente, las interfaces son un mecanismo de la programación orientada a objetos que trata de suplir la carencia de herencia múltiple. La mayoría de los lenguajes que implementan la orientación a objetos no ofrecen la posibilidad de definir una clase que extienda varias clases a la vez y sin embargo a veces es deseable. Ahí es donde entran las interfaces. 
+	
+	Por este motivo, se dice que las interfaces son como un contrato, en el que se especifica las cosas que debe contener una clase para que pueda implementar una interfaz o cumplir el contrato declarado por esa interfaz. 
 
-	Dentro de las interfaces en TypeScript podemos manejar propiedades opcionales añadiendo el signo de pregunta ‘?’ al final del nombre de la propiedad.
+	Primero creamos una interface llamada Componente en inicio.page.ts y agregamos lo siguiente:
 
-	// Interfaz
-	interface ItemIsudos{
-	icon: string;
-	name: string;
-	redirectTo: string; 
+		interface Componente{
+			icon: string;
+			name: string;
+			redirectTo: string; 
 
-	}
+		}
 
-	Ahora haremos vamos a crear un arreglo llamado "componentes":
-		ItemsArray: ItemIsudos[] = [
+	Luego agregamos los componentes:
+		componentes: Componente[] = [
 		{
-		icon: 'beer',
+		icon: 'american-football',
 		name: 'action-sheet',
 		redirectTo: '/action-sheet'    
 		},
 		{
-		icon: 'alert',
+		icon: 'appstore',
 		name: 'Alert',
 		redirectTo: '/alert'    
 		}
 		];
-	
-		// Interfaz
+		
+	Quedaría de esta manera:
+		export class InicioPage implements OnInit {
+
+		ItemsArray: ItemIsudos[] = [
+			{
+			icon: 'beer',
+			name: 'action-sheet',
+			redirectTo: '/action-sheet'    
+			},
+			{
+			icon: 'alert',
+			name: 'Alert',
+			redirectTo: '/alert'    
+			}
+		];
+		constructor() { }
+
+		ngOnInit() {
+		}
+
+		}
+
 		interface ItemIsudos{
 		icon: string;
 		name: string;
@@ -260,19 +285,17 @@ Visual Studio Code - Extensions.pdf
 
 		}
 
+	Directiva ngFor (https://desarrolloweb.com/articulos/directiva-ngfor-angular2.html)
+	Que es la directiva ngFor, es capaz de hacer una repetición de elementos dentro de la página. Esta repetición nos permite recorrer una estructura de array y para cada uno de sus elementos replicar una cantidad de elementos en el DOM. 
 
-*ngFor
-Lo primero que verás es un símbolo asterisco (*) que quizás parezca un poco extraño. No es más que "azúcar sintáctico" para recordarnos que estas directivas (las comenzadas por el asterisco) afectan al DOM, produciendo la inserción, manipulación o borrado de elementos del mismo. 
+	Estamos obligados a crear de antemano un array con datos, que deben ser enviados a la vista, para que ya en el HTML se pueda realizar esa repetición
 
-Ahora utilizaremos en inicio.html un ngFor
+	Ahora que estamos listos para agregar un *ngFor
+	Ejemplo
+	*ngFor="let cualquiertexto of nombredelcomponentes" [routerLink]="cualquiertexto.componentedelarray"
 
-<!-- <ion-item *ngFor="let cualquiertexto of nombredelcomponentes" [routerLink]="cualquiertexto.componentedelarray" detail> -->
-
-<ion-item *ngFor="let items of ItemsArray" [routerLink]="items.redirectTo" detail>
-	<ion-icon [name]="items.icon"></ion-icon>
-	<ion-label>{{items.name}}</ion-label>
-</ion-item>
-
-slot es para la ubicación del icono
-
-2 Action Sheet
+	Quedaría:
+	<ion-item *ngFor="let items of ItemsArray" [routerLink]="items.redirectTo" detail>
+            <ion-icon [name]="items.icon"></ion-icon>
+            <ion-label>{{items.name}}</ion-label>
+        </ion-item>
