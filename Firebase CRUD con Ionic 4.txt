@@ -1,0 +1,144 @@
+
+
+Login
+    Correo y Contraseña
+Registro
+
+
+
+Creamos una base de datos en Firebase.com
+
+Authentication
+    Configurar Metodo de Inicio de Sesión
+        Correo Electrónico
+            Habilitamos la primera opción
+            Guardar
+
+Regresamos a General
+    Nos vamos al icono Web
+    Nombre de la aplicación sin hosting
+        Se generará un SDK con su KEY
+        
+                <!-- The core Firebase JS SDK is always required and must be listed first -->
+                <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+
+                <!-- TODO: Add SDKs for Firebase products that you want to use
+                    https://firebase.google.com/docs/web/setup#config-web-app -->
+
+                <script>
+                // Your web app's Firebase configuration
+                var firebaseConfig = {
+                    apiKey: "AIzaSyBgsqqoenEP_dSd0jm7GpYM4MlQyeAyxJ8",
+                    authDomain: "prestamos-naranja.firebaseapp.com",
+                    databaseURL: "https://prestamos-naranja.firebaseio.com",
+                    projectId: "prestamos-naranja",
+                    storageBucket: "",
+                    messagingSenderId: "526568020075",
+                    appId: "1:526568020075:web:15ea304f7465495f"
+                };
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                </script>
+
+Ahora en el proyecto de IONIC Creado:
+    Nos vamos a la carpeta
+        src/environment/environment.ts
+    Ahora pegaremos la varianble del KEY dentro de environment.ts quitando los signos = por dos puntos(:) y quitar el ultimo ; el cual quedaría de esta foma:
+
+            export const environment = {
+            production: false,
+                firebaseConfig :{
+                    apiKey: "AIzaSyBgsqqoenEP_dSd0jm7GpYM4MlQyeAyxJ8",
+                    authDomain: "prestamos-naranja.firebaseapp.com",
+                    databaseURL: "https://prestamos-naranja.firebaseio.com",
+                    projectId: "prestamos-naranja",
+                    storageBucket: "",
+                    messagingSenderId: "526568020075",
+                    appId: "1:526568020075:web:15ea304f7465495f"
+                }
+            };
+
+AHora hay que instalar la dependencia de firebase:
+    sudo npm i firebase @angular/fire
+
+Ahora crearemos las páginas necesarias dentro de IONIC
+    ionic generate page pages/login --spec=false
+    ionic generate page pages/home --spec=false
+    ionic generate page pages/register --spec=false
+
+    ionic generate services services/auth
+    Es para organizar nuestros metodos de Login y Register
+    ionic generate guard guards/auth
+    Es para proteger nuestras rutas
+
+Nos vamos al fichero app.module.ts e iniciamos a importar.
+    import { AngularFireModule } from '@angular/fire';
+    import { AngularFirestoreModule } from '@angular/fire/firestore';
+Ahora nos vamos al apartado del import y agregamos lo siguiente.
+
+    AngularFireModule.initializeApp(xxxxxx),
+    AngularFireAuthModule
+
+    en las xxxxx pondremos variable de nuestra firebase confing de environnment
+
+Ahora importaremos los ficheros de environment
+    import { environment } from '../environments/environment';
+
+    y agregamos la variable a environment
+
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule
+
+Ahora nos dirijimos a auth.service.ts e iniciamos importando lo siguiente:
+    import { AngularFireAuth } from '@angular/fire/auth';
+
+    Ahora inyectaremos esto dentro de nuestro constructor 
+    public isLogged: any = false;
+  
+    constructor(public afAuth:AngularFireAuth) { 
+        afAuth.authState.subscribe( user => (this.isLogged = user))
+    }
+    
+    Esto nos devuelve si un usuario este logeado y si no devuelve un null:
+    afAuth.authState.subscribe( user => (this.isLogged = user))
+   
+Ahora crearemos dos metodos Login y Register
+    Metodo Login
+    async onLogin (user){
+        try{
+        return await this.afAuth.auth.signInWithEmailAndPassword(
+            user.email,
+            user.password
+            );
+        }catch (error){
+        console.log('Error en Login', error)
+    }
+    Metodo Register
+    async onRegister (user){
+        try{
+        return await this.afAuth.auth.createUserWithEmailAndPassword(
+            user.email,
+            user.password
+            );
+        }catch (error){
+        console.log('Error en Registro', error)
+        }
+    }
+
+Ahora crearemos una carpeta llamada shared con un archivo llamada user.class.ts para crear la siguiente clase:
+    export class User {
+        email:string;
+        password: string;
+    }
+Ahora lo importaremos en auth.service.ts 
+    import { User } from '../shared/user.class';    
+y lo agregaremos en nuestros parametros
+    Metodo Login
+        async onLogin (user:User){ 
+
+    Metodo Register
+        async onRegister (user:User){
+
+Minuto 16:14
+
+Ahora vamos agregar 
