@@ -1,0 +1,428 @@
+
+
+Login
+    Correo y Contraseña
+Registro
+
+
+
+Creamos una base de datos en Firebase.com
+
+Authentication
+    Configurar Metodo de Inicio de Sesión
+        Correo Electrónico
+            Habilitamos la primera opción
+            Guardar
+
+Regresamos a General
+    Nos vamos al icono Web
+    Nombre de la aplicación sin hosting
+        Se generará un SDK con su KEY
+        
+                <!-- The core Firebase JS SDK is always required and must be listed first -->
+                <script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+
+                <!-- TODO: Add SDKs for Firebase products that you want to use
+                    https://firebase.google.com/docs/web/setup#config-web-app -->
+
+                <script>
+                // Your web app's Firebase configuration
+                var firebaseConfig = {
+                    apiKey: "AIzaSyBgsqqoenEP_dSd0jm7GpYM4MlQyeAyxJ8",
+                    authDomain: "prestamos-naranja.firebaseapp.com",
+                    databaseURL: "https://prestamos-naranja.firebaseio.com",
+                    projectId: "prestamos-naranja",
+                    storageBucket: "",
+                    messagingSenderId: "526568020075",
+                    appId: "1:526568020075:web:15ea304f7465495f"
+                };
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                </script>
+
+Ahora en el proyecto de IONIC Creado:
+    Nos vamos a la carpeta
+        src/environment/environment.ts
+    Ahora pegaremos la varianble del KEY dentro de environment.ts quitando los signos = por dos puntos(:) y quitar el ultimo ; el cual quedaría de esta foma:
+
+            export const environment = {
+            production: false,
+                firebaseConfig :{
+                    apiKey: "AIzaSyBgsqqoenEP_dSd0jm7GpYM4MlQyeAyxJ8",
+                    authDomain: "prestamos-naranja.firebaseapp.com",
+                    databaseURL: "https://prestamos-naranja.firebaseio.com",
+                    projectId: "prestamos-naranja",
+                    storageBucket: "",
+                    messagingSenderId: "526568020075",
+                    appId: "1:526568020075:web:15ea304f7465495f"
+                }
+            };
+
+AHora hay que instalar la dependencia de firebase:
+    sudo npm i firebase @angular/fire
+
+Ahora crearemos las páginas necesarias dentro de IONIC
+    ionic generate page pages/login --spec=false
+    ionic generate page pages/home --spec=false
+    ionic generate page pages/register --spec=false
+
+    ionic generate services services/auth
+    Es para organizar nuestros metodos de Login y Register
+    ionic generate guard guards/auth
+    Es para proteger nuestras rutas
+
+Nos vamos al fichero app.module.ts e iniciamos a importar.
+    import { AngularFireModule } from '@angular/fire';
+    import { AngularFirestoreModule } from '@angular/fire/firestore';
+Ahora nos vamos al apartado del import y agregamos lo siguiente.
+
+    AngularFireModule.initializeApp(xxxxxx),
+    AngularFireAuthModule
+
+    en las xxxxx pondremos variable de nuestra firebase confing de environnment
+
+Ahora importaremos los ficheros de environment
+    import { environment } from '../environments/environment';
+
+    y agregamos la variable a environment
+
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule
+
+Ahora nos dirijimos a auth.service.ts e iniciamos importando lo siguiente:
+    import { AngularFireAuth } from '@angular/fire/auth';
+
+    Ahora inyectaremos esto dentro de nuestro constructor 
+    public isLogged: any = false;
+  
+    constructor(public afAuth:AngularFireAuth) { 
+        afAuth.authState.subscribe( user => (this.isLogged = user))
+    }
+    
+    Esto nos devuelve si un usuario este logeado y si no devuelve un null:
+    afAuth.authState.subscribe( user => (this.isLogged = user))
+   
+Ahora crearemos dos metodos Login y Register
+    Metodo Login
+    async onLogin (user){
+        try{
+        return await this.afAuth.auth.signInWithEmailAndPassword(
+            user.email,
+            user.password
+            );
+        }catch (error){
+        console.log('Error en Login', error)
+    }
+    Metodo Register
+    async onRegister (user){
+        try{
+        return await this.afAuth.auth.createUserWithEmailAndPassword(
+            user.email,
+            user.password
+            );
+        }catch (error){
+        console.log('Error en Registro', error)
+        }
+    }
+
+Ahora crearemos una carpeta llamada shared con un archivo llamada user.class.ts para crear la siguiente clase:
+    export class User {
+        email:string;
+        password: string;
+    }
+Ahora lo importaremos en auth.service.ts 
+    import { User } from '../shared/user.class';    
+y lo agregaremos en nuestros parametros
+    Metodo Login
+        async onLogin (user:User){ 
+
+    Metodo Register
+        async onRegister (user:User){
+
+Minuto 16:14
+
+Ahora vamos a Registro
+    Crearemos los Inputs y botones 
+
+    En los Inputs pondremos la directiva ngModel (Básicamente se trata de un enlace, entre algo que tienes en la definición del componente con un campo de formulario del template (vista) del componente. )
+    https://desarrolloweb.com/articulos/directiva-ngmodel-angular.html
+
+        [(ngModel)]="user.mail
+        [(ngModel)]="user.password"
+
+    En los botones pondremos el evento click y llamaremos el metodo OnRegister cuando el usuario de click
+
+    Crearemos otro boton que tendra un enlace Login.
+
+Ahora nos vamos a register.page.ts para importaremos lo siguiente:
+    import { Router } from '@angular/router';
+    import { AuthService } from '../../../services/auth.service';
+    import { User } from '../../../shared/user.class';
+
+Ahora crearemos una instancia de nuestra clase
+
+    user: User = new User();
+
+Ahora en el constructor debemos inyectar el service Auth y nuestro Router
+    
+    constructor(private authSvc: AuthService, private router: Router)  { }
+
+Ahora crearemos el metodo onRegister para que sea llamado y cree el registro:
+
+    async onRegister(){
+        const user = await this.authSvc.onRegister(this.user);
+    if (user){
+        console.log('Successfully created user!');
+        this.router.navigateByUrl('/inicio') //este lo lleva al inicio
+    }
+    }
+    
+A Testear....
+
+
+Ahora crearemos el Login
+
+Iniciamos importando 
+    import { Router } from '@angular/router';
+    import { AuthService } from '../../../services/auth.service';
+    import { User } from '../../../shared/user.class';
+
+Ahora crearemos una instancia de nuestra clase
+
+    user: User = new User();
+
+Ahora en el constructor debemos inyectar el service Auth y nuestro Router
+    
+    constructor(private authSvc: AuthService, private router: Router)  { }
+
+Ahora crearemos el metodo onLogin para que sea llamado y el usuario inicie sesión:
+
+    async onLogin(){
+    const user = await this.authSvc.onLogin(this.user);
+    if (user){
+        console.log('Successfully logged in!');
+        this.router.navigateByUrl('/inicio')
+    }
+    }
+
+A Testear....
+
+
+Ahora realizaremos el Guard 
+ creamos si no la tenemos
+    ionic generate guard guards/auth
+
+El archivo auth.guard.ts inicial debe de verse así:
+    import { Injectable } from '@angular/core';
+    import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, CanActivate } from '@angular/router';
+    import { Observable } from 'rxjs';
+
+    @Injectable({
+    providedIn: 'root'
+    })
+    export class AuthGuard implements CanActivate{
+        canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): 
+        | Observable<boolean | UrlTree> 
+        | Promise<boolean |UrlTree> 
+        | boolean 
+        | UrlTree {
+        return true;
+        }    
+    }
+
+Nos vamos a app-routing.module.ts e importamos nuestro AuthGuard
+
+    import { AuthGuard } from './guards/auth.guard';
+
+
+regresamos a auth.guard.ts e importamos:
+
+    import { AuthService } from '../services/auth.service';
+    import { Router } from '@angular/router';
+
+y agregamos el contructor:
+    constructor(private authSvc: AuthService, private router:Router ){
+    }
+
+Ahora realizaremos una comprobación:
+
+    if (this.authSvc.isLogged){
+        return true;
+    }
+    console.log('Access denied!');
+    this.router.navigateByUrl('/sign-in')
+    return false;
+
+
+Agregaremos una alerta
+
+    async showAlert() {
+        let alert = await this.alertCtrl.create({
+        header: 'No autorizado',
+        message: '¡No estás autorizado para visitar esa página!',
+        buttons: ['OK']
+        });
+        alert.present();
+    }
+
+Y agregamos el import { AlertController } from "@ionic/angular";
+
+if (this.authSvc.isLogged){
+        return true;
+    }
+    console.log('Access denied!');
+    this.router.navigateByUrl('/sign-in')
+    this.showAlert();
+    return false;
+
+
+Ahora cerraremos sesión
+    Importaremos lo necesario   
+
+    import { AngularFireAuth } from '@angular/fire/auth';
+    import { Router } from '@angular/router';
+    import { AuthService } from '../../services/auth.service';
+    import { AlertController } from '@ionic/angular';
+
+Agregamos al contructor
+    constructor(
+    private authSvc: AuthService,
+    private router: Router,
+    private afAuth: AngularFireAuth
+  ) {}
+
+Ahora crearemos el metodo onLogout():
+    async onLogout(){
+        let alert = await this.alertCtrl.create({
+        header: "Cerrar sesión",
+        message: '¿Está seguro que quiere cerrar sesión?',
+        buttons: [
+            {
+            text: 'Cancelar',
+            role: 'cancel'
+            },
+            {
+            text: 'Aceptar',
+            handler: () => {
+                this.afAuth.auth.signOut();
+                this.router.navigateByUrl('/sign-in');
+            }
+            }
+        ]
+        })
+        alert.present();
+    }
+
+
+AHora tendremos que mantener la sesión iniciada con o sin internet.
+
+    Para mantener la sesión es algo más complejo ya que vamos a hacer un metodo casi a la inversa:
+
+    Ahora nos vamos a auth.service.ts
+
+    Vamos a iniciar en crear un metodo llamado subscribeUser() en auth.service.ts  el cual lo convertiremos en una promesa en boolean donde indicara si tienen iniciada la sesion o no lo dependiendo de esto lo dejara pasar o no.
+    
+        subscribeUser():Promise<boolean>{
+            return new Promise((resolve,reject)=>{ //esto hace que la funcion se haga async
+            })
+        }
+
+    Sacaremos del constructor el afAuth.authState.subscribe( user => (this.isLogged = user)) y lo  meteremos en el metodo, ya que esta fuera del constructor utilizaremos un this.
+
+        subscribeUser():Promise<boolean>{
+        return new Promise((resolve,reject)=>{
+        this.afAuth.authState.subscribe( user => {
+            this.isLogged = user
+            resolve(user ? true : false);
+        })
+        })
+
+    }
+    Quedaría:
+        Constructor(public afAuth:AngularFireAuth) { 
+        
+        }
+
+        subscribeUser():Promise<boolean>{
+            return new Promise((resolve,reject)=>{
+            this.afAuth.authState.subscribe( user => {
+                this.isLogged = user
+                resolve(user ? true : false);
+            })
+            })
+        
+        }
+
+
+    Ahora nos vamos a auth.guard.ts
+
+    agregaremos un return con una promesa para que podamos llamar al metodo y así saber si el usuario inicio o no la sesión y restringir o no acceso.
+
+    return new Promise((resolve,reject)=>{
+      this.authSvc.subscribeUser().then(isLogged=>{
+        // Comprobación
+        if (isLogged) {
+          this.router.navigateByUrl("/inicio");
+          resolve(false);
+        }
+        // Si no redirecciona a Login
+        // console.log("Access denied!");
+        // this.showAlert();
+        resolve(true);
+      })
+    })
+
+
+    Nos vamos al app-routing.module.ts y moveremos el  canActivate: [AuthGuard] a la pagina del Login o Sign-in
+        { path: 'sign-in', loadChildren: './pages/auth/sign-in/sign-in.module#SignInPageModule', canActivate: [AuthGuard] },
+
+    Ahora nos vamos a app.component.ts  e importaremos el AuthService y lo agregamos al constructor
+        import { AuthService } from './services/auth.service';
+
+          constructor(
+                private platform: Platform,
+                private platform: Platform,
+                private splashScreen: SplashScreen,
+                private splashScreen: SplashScreen,
+                private statusBar: StatusBar
+                private statusBar: StatusBar,
+                private authSvc: AuthService
+            )
+    Ahora haremos que el metodo initializeApp Asincrono (async) y esperaremos (await) el servicio
+            initializeApp() {
+                this.platform.ready().then(() => {
+                this.platform.ready().then(async () => {
+                this.statusBar.styleDefault();
+                this.statusBar.styleDefault();
+                await this.authSvc.subscribeUser();
+                this.splashScreen.hide();
+                this.splashScreen.hide();
+                });
+                });
+            }
+
+    El app.component.ts debería de quedar algo así:
+        import { Platform } from '@ionic/angular';
+        import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+        import { StatusBar } from '@ionic-native/status-bar/ngx';
+        import { AuthService } from './services/auth.service';
+
+        @Component({
+            selector: 'app-root',
+
+            constructor(
+                private platform: Platform,
+                private splashScreen: SplashScreen,
+                private statusBar: StatusBar,
+                private authSvc: AuthService 
+            ) {
+                this.initializeApp();
+            }
+
+            initializeApp() {
+                this.platform.ready().then(async () => {
+                    this.statusBar.styleDefault(); 
+                await this.authSvc.subscribeUser();
+                this.splashScreen.hide();
+            });
+        }
